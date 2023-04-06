@@ -1,0 +1,14 @@
+{
+  "name": "na62visualize",
+  "version": "1.0.0",
+  "description": "This is a coding project to make a visualization tool for the NA62 detectors. At first I will implement this for the CEDAR sub-detector.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jsanders",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
