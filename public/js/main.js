@@ -64,6 +64,12 @@ subRes.position.set(0,0,26.89+(3.2105*0.5));
 
 scene.add( subRes );
 
+const geometry = new THREE.SphereGeometry( 0.1, 32, 16 );
+const materialparticle = new THREE.MeshBasicMaterial( { color: '#EE4B2B' } );
+const sphere = new THREE.Mesh( geometry, materialparticle );
+sphere.position.set(0,0,-40)
+scene.add( sphere );
+
 // Lights
 const lights = [];
 const lightValues = [
@@ -98,7 +104,10 @@ scene.add(axesHelper); // X == red, Y == green, Z == blue
 const rendering = function() {
     requestAnimationFrame(rendering);    // Constantly rotate box
     //scene.rotation.z -= 0.005;
-    //scene.rotation.x -= 0.01;    
+    //scene.rotation.x -= 0.01;
+    sphere.position.z += 1
+    if(sphere.position.z == 50)
+        sphere.position.z = -40
     renderer.render(scene, camera);
     controls.update();
 };
