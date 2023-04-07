@@ -17,12 +17,43 @@ window.addEventListener('resize', () => {
 })
 
 // Create Box
-const boxGeometry = new THREE.BoxGeometry(2, 2, 2);
-const boxMaterial = new THREE.MeshLambertMaterial({color: 0xFFFFFF});
-const boxMesh = new THREE.Mesh(boxGeometry, 
-boxMaterial);
-boxMesh.rotation.set(0, 0, 0);
-scene.add(boxMesh);
+//const boxGeometry = new THREE.BoxGeometry(2, 2, 2);
+//const boxMaterial = new THREE.MeshLambertMaterial({color: 0xFFFFFF});
+//const boxMesh = new THREE.Mesh(boxGeometry, 
+//boxMaterial);
+//boxMesh.rotation.set(0, 0, 0);
+//scene.add(boxMesh);
+
+const Cone1 = new THREE.CylinderGeometry(0.15,0.15,0.339,32,1,false);
+const material1 = new THREE.MeshBasicMaterial( {color: 0xFFFFFF} );
+const coneMesh1 = new THREE.Mesh( Cone1, material1 );
+coneMesh1.position.set(0,0,-1.9805);
+coneMesh1.rotation.set(Math.PI / 2,0,0);
+scene.add(coneMesh1);
+
+const Cone2 = new THREE.CylinderGeometry(0.271,0.271,0.01,32,1,false);
+const material2 = new THREE.MeshBasicMaterial( {color: 0xFFFFFF} );
+const coneMesh2 = new THREE.Mesh( Cone2, material2 );
+coneMesh2.position.set(0,0,-1.806);
+coneMesh2.rotation.set(Math.PI / 2,0,0);
+scene.add(coneMesh2);
+
+const Cone3 = new THREE.CylinderGeometry(0.271,0.271,4.49,32,1,false);
+const material3 = new THREE.MeshBasicMaterial( {color: 0xFFFFFF} );
+const coneMesh3 = new THREE.Mesh( Cone3, material3 );
+coneMesh3.position.set(0,0,0.444);
+coneMesh3.rotation.set(Math.PI / 2,0,0);
+scene.add(coneMesh3);
+
+const Cone4 = new THREE.CylinderGeometry(0.039,0.271,0.32105,32,1,false);
+const material4 = new THREE.MeshBasicMaterial( {color: 0xFFFFFF} );
+const coneMesh4 = new THREE.Mesh( Cone4, material4 );
+coneMesh4.position.set(0,0,2.849525);
+coneMesh4.rotation.set(Math.PI / 2,0,0);
+scene.add(coneMesh4);
+
+
+
 
 // Lights
 const lights = [];
