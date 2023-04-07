@@ -307,6 +307,7 @@ fCondenserPosition = np.array([0.0, 0.0, fZCedarOriginRB + fZCondenserStart + 0.
 
 z = [0] * 7
 rOut = [0] * 7
+rIn = [0] * 7
 
 z[0] = fFrontVesselPosition[2] - 0.5 * fFrontVesselZLength
 z[1] = z[0] + fFrontVesselZLength
@@ -325,6 +326,16 @@ rOut[4] = rOut[3]
 rOut[5] = rOut[4]
 rOut[6] = fExitPipeOuterRadius
 
+rIn[0] = fFrontVesselInnerRadius
+rIn[1] = rIn[0]
+rIn[2] = rIn[1]
+rIn[3] = rIn[2]
+rIn[4] = fMainVesselInnerRadius
+rIn[5] = rIn[4]
+rIn[6] = fExitPipeInnerRadius
+
+
 
 print(z)
 print(rOut)
+print(rIn)
