@@ -77,8 +77,8 @@ scene.add( sphere );
  ///////////////////////////////////////////////////////////////
 //                  Magnin Mirror                            //
 
-var R =  15;
-var r =  4;
+var R =  CedarGeoPars.fManginMirrorOuterRadius;
+var r =  CedarGeoPars.fManginMirrorInnerRadius;
 var cx = 0;
 var cy = 0;
 var sAngle = THREE.MathUtils.degToRad(0);
@@ -91,27 +91,29 @@ shape.absarc(cx, cy, r, eAngle, sAngle, true);
 
 var extrudeSettings1 = {
     steps: 2,
-    depth: 4
+    depth: CedarGeoPars.fManginMirrorZLength
 }
 var material1 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
 
 var cylinder1 = new THREE.ExtrudeGeometry(shape, extrudeSettings1 );
 var meshCyl = new THREE.Mesh( cylinder1, material1 );
 
-var largeSphere = new THREE.SphereGeometry(977.0,32,16)
+var largeSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorReflectingSurfaceRadius,32,16)
 var meshLSp = new THREE.Mesh( largeSphere, material1 );
 
-var smallSphere = new THREE.SphereGeometry(899.4,32,16)
+var smallSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorRefractingSurfaceRadius,32,16)
 var meshSSp = new THREE.Mesh( smallSphere, material1 );
 
-meshLSp.position.set(0,0,-975)
+meshLSp.position.set(0,0,-CedarGeoPars.fManginMirrorReflectingSurfaceRadius 
+    + 0.5*CedarGeoPars.fManginMirrorZLength);
 const intRes = CSG.intersect(meshCyl, meshLSp);
 
-intRes.position.set(0,0,-901.4000000000001)
+intRes.position.set(0,0,-CedarGeoPars.fManginMirrorRefractingSurfaceRadius 
+    - 0.5*CedarGeoPars.fManginMirrorZLength);
 const LenseMesh = CSG.intersect(intRes,meshSSp)
 
-LenseMesh.position.set(0,0,274.1);
-//meshCyl.position.set(50,0,20);
+const ManginPos = CedarGeoPars.fManginMirrorPosition
+LenseMesh.position.set(ManginPos[0],ManginPos[1],ManginPos[2]);
 scene.add(LenseMesh)
 
  ///////////////////////////////////////////////////////////////
