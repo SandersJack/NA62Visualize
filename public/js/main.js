@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import { CSG } from 'three-csg-ts';
+import * as CedarGeoPars from './CedarGeometryParam.js'
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.6, 1200);
@@ -20,10 +21,11 @@ window.addEventListener('resize', () => {
  ///////////////////////////////////////////////////////////////
 //                  Vessel Volumes                          //
 
+
 const volumes = [
-    {rout : 15.0, rin: 13.9, length: 33.9, z: -215, colour: "#CFD4D9"},
-    {rout : 27.9, rin: 13.9, length: 1 , z: -181.1,colour: "#CFD4D9"},
-    {rout : 27.9, rin: 26.7, length: 449 ,z: -180.1,colour: "#CFD4D9"},
+    {rout : CedarGeoPars.fFrontVesselOuterRadius, rin: CedarGeoPars.fFrontVesselInnerRadius, length: CedarGeoPars.fFrontVesselZLength, z: CedarGeoPars.fFrontVesselPosition[2] - 0.5 * CedarGeoPars.fFrontVesselZLength, colour: "#CFD4D9"},
+    {rout : CedarGeoPars.fMainVesselOuterRadius, rin: CedarGeoPars.fFrontPipeInnerRadius, length: 1 , z: CedarGeoPars.fFrontVesselPosition[2] + 0.5 * CedarGeoPars.fFrontVesselZLength,colour: "#CFD4D9"},
+    {rout : CedarGeoPars.fMainVesselOuterRadius, rin: CedarGeoPars.fMainVesselInnerRadius, length: CedarGeoPars.fMainVesselCylinderZLength ,z: CedarGeoPars.fFrontVesselPosition[2] + 0.5 * CedarGeoPars.fFrontVesselZLength + 1,colour: "#CFD4D9"},
 ];
 
 
@@ -53,8 +55,14 @@ for(let i=0; i<3; i++){
 
 }
 
-var bigCylinder = new THREE.CylinderGeometry(3.9,27.9, 32.105, 32 );
-var smallCylinder = new THREE.CylinderGeometry(3.75,26.7, 32.105, 32 );
+const coneL = (CedarGeoPars.fExitWindowPosition[2] - 0.5*CedarGeoPars.fExitWindowZLength) - (CedarGeoPars.fMainVesselCylinderPosition[2]
+    +0.5*CedarGeoPars.fMainVesselCylinderZLength);
+
+const conePos = (CedarGeoPars.fMainVesselCylinderPosition[2]
+    +0.5*CedarGeoPars.fMainVesselCylinderZLength) + 0.5*coneL;
+
+var bigCylinder = new THREE.CylinderGeometry(CedarGeoPars.fExitPipeOuterRadius,CedarGeoPars.fMainVesselOuterRadius, coneL, 32 );
+var smallCylinder = new THREE.CylinderGeometry(CedarGeoPars.fExitPipeInnerRadius,CedarGeoPars.fMainVesselInnerRadius, coneL, 32 );
 
 const material = new THREE.MeshBasicMaterial( {color: "#CFD4D9"} );
 const cylinderBig = new THREE.Mesh( bigCylinder, material );
@@ -62,10 +70,11 @@ const cylinderSmall = new THREE.Mesh( smallCylinder, material );
 
 const subRes = CSG.subtract(cylinderBig, cylinderSmall);
 subRes.rotation.set(Math.PI / 2,0,0);
-subRes.position.set(0,0,268.9+(32.105*0.5));
-//var hollowCylinder = subRes.toMesh( material );
-
+subRes.position.set(0,0,conePos);
 scene.add( subRes );
+
+ ///////////////////////////////////////////////////////////////
+//                  Particle                                 //
 
 const geometry = new THREE.SphereGeometry( 1, 32, 16 );
 const materialparticle = new THREE.MeshBasicMaterial( { color: '#EE4B2B' } );
@@ -76,8 +85,8 @@ scene.add( sphere );
  ///////////////////////////////////////////////////////////////
 //                  Magnin Mirror                            //
 
-var R =  15;
-var r =  4;
+var R =  CedarGeoPars.fManginMirrorOuterRadius;
+var r =  CedarGeoPars.fManginMirrorInnerRadius;
 var cx = 0;
 var cy = 0;
 var sAngle = THREE.MathUtils.degToRad(0);
@@ -90,34 +99,36 @@ shape.absarc(cx, cy, r, eAngle, sAngle, true);
 
 var extrudeSettings1 = {
     steps: 2,
-    depth: 4
+    depth: CedarGeoPars.fManginMirrorZLength
 }
 var material1 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
 
 var cylinder1 = new THREE.ExtrudeGeometry(shape, extrudeSettings1 );
 var meshCyl = new THREE.Mesh( cylinder1, material1 );
 
-var largeSphere = new THREE.SphereGeometry(977.0,32,16)
+var largeSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorReflectingSurfaceRadius,32,16)
 var meshLSp = new THREE.Mesh( largeSphere, material1 );
 
-var smallSphere = new THREE.SphereGeometry(899.4,32,16)
+var smallSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorRefractingSurfaceRadius,32,16)
 var meshSSp = new THREE.Mesh( smallSphere, material1 );
 
-meshLSp.position.set(0,0,-975)
+meshLSp.position.set(0,0,-CedarGeoPars.fManginMirrorReflectingSurfaceRadius 
+    + 0.5*CedarGeoPars.fManginMirrorZLength);
 const intRes = CSG.intersect(meshCyl, meshLSp);
 
-intRes.position.set(0,0,-901.4000000000001)
+intRes.position.set(0,0,-CedarGeoPars.fManginMirrorRefractingSurfaceRadius 
+    - 0.5*CedarGeoPars.fManginMirrorZLength);
 const LenseMesh = CSG.intersect(intRes,meshSSp)
 
-LenseMesh.position.set(0,0,274.1);
-//meshCyl.position.set(50,0,20);
+const ManginPos = CedarGeoPars.fManginMirrorPosition
+LenseMesh.position.set(ManginPos[0],ManginPos[1],ManginPos[2]);
 scene.add(LenseMesh)
 
  ///////////////////////////////////////////////////////////////
 //                  Chromatic Corrector                      //
 
-var R =  16;
-var r =  7.5;
+var R =  CedarGeoPars.fChromaticCorrectorOuterRadius;
+var r =  CedarGeoPars.fChromaticCorrectorInnerRadius;
 var cx = 0;
 var cy = 0;
 var sAngle = THREE.MathUtils.degToRad(0);
@@ -130,24 +141,24 @@ shapeRing.absarc(cx, cy, r, eAngle, sAngle, true);
 
 var extrudeSettings2 = {
     steps: 2,
-    depth: 2
+    depth: CedarGeoPars.fChromaticCorrectorZLength
 }
 var material2 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
 
 var cylinder2 = new THREE.ExtrudeGeometry(shapeRing, extrudeSettings2 );
 var meshCyl2 = new THREE.Mesh( cylinder2, material2 );
 
-var intSphere = new THREE.SphereGeometry(130.7,32,16);
+var intSphere = new THREE.SphereGeometry(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,32,16);
 var meshintSph = new THREE.Mesh( intSphere, material2 );
 
-var dL = -129.7;
-dL -= 0.21536488919471708;
-
+var dL = -CedarGeoPars.fChromaticCorrectorRearSurfaceRadius + 0.5*CedarGeoPars.fChromaticCorrectorZLength;
+dL -= CedarGeoPars.fChromaticCorrectorRearSurfaceRadius - Math.sqrt(Math.pow(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,2) - Math.pow(CedarGeoPars.fChromaticCorrectorInnerRadius,2));
 meshintSph.position.set(0,0,dL);
 
 const intSolid = CSG.intersect(meshCyl2,meshintSph);
 
-intSolid.position.set(0,0,-76.7);
+const ChromPos = CedarGeoPars.fChromaticCorrectorPosition;
+intSolid.position.set(ChromPos[0],ChromPos[1],ChromPos[2]);
 scene.add(intSolid);
 
 

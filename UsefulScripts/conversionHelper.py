@@ -335,4 +335,6 @@ rIn[5] = rIn[4]
 rIn[6] = fExitPipeInnerRadius
 
 
-print(fManginMirrorPosition)
+print(-fChromaticCorrectorRearSurfaceRadius + 0.5*fChromaticCorrectorZLength)
+print(fChromaticCorrectorRearSurfaceRadius - np.sqrt(fChromaticCorrectorRearSurfaceRadius**2 - fChromaticCorrectorInnerRadius**2))
+print(fChromaticCorrectorPosition)
