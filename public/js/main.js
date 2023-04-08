@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import { CSG } from 'three-csg-ts';
+import * as CedarGeoPars from './CedarGeometryParam.js'
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.6, 1200);
@@ -116,8 +117,8 @@ scene.add(LenseMesh)
  ///////////////////////////////////////////////////////////////
 //                  Chromatic Corrector                      //
 
-var R =  16;
-var r =  7.5;
+var R =  CedarGeoPars.fChromaticCorrectorOuterRadius;
+var r =  CedarGeoPars.fChromaticCorrectorInnerRadius;
 var cx = 0;
 var cy = 0;
 var sAngle = THREE.MathUtils.degToRad(0);
@@ -130,24 +131,24 @@ shapeRing.absarc(cx, cy, r, eAngle, sAngle, true);
 
 var extrudeSettings2 = {
     steps: 2,
-    depth: 2
+    depth: CedarGeoPars.fChromaticCorrectorZLength
 }
 var material2 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
 
 var cylinder2 = new THREE.ExtrudeGeometry(shapeRing, extrudeSettings2 );
 var meshCyl2 = new THREE.Mesh( cylinder2, material2 );
 
-var intSphere = new THREE.SphereGeometry(130.7,32,16);
+var intSphere = new THREE.SphereGeometry(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,32,16);
 var meshintSph = new THREE.Mesh( intSphere, material2 );
 
-var dL = -129.7;
-dL -= 0.21536488919471708;
-
+var dL = -CedarGeoPars.fChromaticCorrectorRearSurfaceRadius + 0.5*CedarGeoPars.fChromaticCorrectorZLength;
+dL -= CedarGeoPars.fChromaticCorrectorRearSurfaceRadius - Math.sqrt(Math.pow(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,2) - Math.pow(CedarGeoPars.fChromaticCorrectorInnerRadius,2));
 meshintSph.position.set(0,0,dL);
 
 const intSolid = CSG.intersect(meshCyl2,meshintSph);
 
-intSolid.position.set(0,0,-76.7);
+const ChromPos = CedarGeoPars.fChromaticCorrectorPosition;
+intSolid.position.set(ChromPos[0],ChromPos[1],ChromPos[2]);
 scene.add(intSolid);
 
 
