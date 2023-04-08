@@ -113,6 +113,44 @@ LenseMesh.position.set(0,0,274.1);
 //meshCyl.position.set(50,0,20);
 scene.add(LenseMesh)
 
+ ///////////////////////////////////////////////////////////////
+//                  Chromatic Corrector                      //
+
+var R =  16;
+var r =  7.5;
+var cx = 0;
+var cy = 0;
+var sAngle = THREE.MathUtils.degToRad(0);
+var eAngle = THREE.MathUtils.degToRad(360);
+
+let shapeRing = new THREE.Shape();
+
+shapeRing.absarc(cx, cy, R, sAngle, eAngle);
+shapeRing.absarc(cx, cy, r, eAngle, sAngle, true);
+
+var extrudeSettings2 = {
+    steps: 2,
+    depth: 2
+}
+var material2 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
+
+var cylinder2 = new THREE.ExtrudeGeometry(shapeRing, extrudeSettings2 );
+var meshCyl2 = new THREE.Mesh( cylinder2, material2 );
+
+var intSphere = new THREE.SphereGeometry(130.7,32,16);
+var meshintSph = new THREE.Mesh( intSphere, material2 );
+
+var dL = -129.7;
+dL -= 0.21536488919471708;
+
+meshintSph.position.set(0,0,dL);
+
+const intSolid = CSG.intersect(meshCyl2,meshintSph);
+
+intSolid.position.set(0,0,-76.7);
+scene.add(intSolid);
+
+
 
 // Lights
 const lights = [];
