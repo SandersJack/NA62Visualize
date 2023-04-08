@@ -21,10 +21,11 @@ window.addEventListener('resize', () => {
  ///////////////////////////////////////////////////////////////
 //                  Vessel Volumes                          //
 
+
 const volumes = [
-    {rout : 15.0, rin: 13.9, length: 33.9, z: -215, colour: "#CFD4D9"},
-    {rout : 27.9, rin: 13.9, length: 1 , z: -181.1,colour: "#CFD4D9"},
-    {rout : 27.9, rin: 26.7, length: 449 ,z: -180.1,colour: "#CFD4D9"},
+    {rout : CedarGeoPars.fFrontVesselOuterRadius, rin: CedarGeoPars.fFrontVesselInnerRadius, length: CedarGeoPars.fFrontVesselZLength, z: CedarGeoPars.fFrontVesselPosition[2] - 0.5 * CedarGeoPars.fFrontVesselZLength, colour: "#CFD4D9"},
+    {rout : CedarGeoPars.fMainVesselOuterRadius, rin: CedarGeoPars.fFrontPipeInnerRadius, length: 1 , z: CedarGeoPars.fFrontVesselPosition[2] + 0.5 * CedarGeoPars.fFrontVesselZLength,colour: "#CFD4D9"},
+    {rout : CedarGeoPars.fMainVesselOuterRadius, rin: CedarGeoPars.fMainVesselInnerRadius, length: CedarGeoPars.fMainVesselCylinderZLength ,z: CedarGeoPars.fFrontVesselPosition[2] + 0.5 * CedarGeoPars.fFrontVesselZLength + 1,colour: "#CFD4D9"},
 ];
 
 
@@ -54,8 +55,14 @@ for(let i=0; i<3; i++){
 
 }
 
-var bigCylinder = new THREE.CylinderGeometry(3.9,27.9, 32.105, 32 );
-var smallCylinder = new THREE.CylinderGeometry(3.75,26.7, 32.105, 32 );
+const coneL = (CedarGeoPars.fExitWindowPosition[2] - 0.5*CedarGeoPars.fExitWindowZLength) - (CedarGeoPars.fMainVesselCylinderPosition[2]
+    +0.5*CedarGeoPars.fMainVesselCylinderZLength);
+
+const conePos = (CedarGeoPars.fMainVesselCylinderPosition[2]
+    +0.5*CedarGeoPars.fMainVesselCylinderZLength) + 0.5*coneL;
+
+var bigCylinder = new THREE.CylinderGeometry(CedarGeoPars.fExitPipeOuterRadius,CedarGeoPars.fMainVesselOuterRadius, coneL, 32 );
+var smallCylinder = new THREE.CylinderGeometry(CedarGeoPars.fExitPipeInnerRadius,CedarGeoPars.fMainVesselInnerRadius, coneL, 32 );
 
 const material = new THREE.MeshBasicMaterial( {color: "#CFD4D9"} );
 const cylinderBig = new THREE.Mesh( bigCylinder, material );
@@ -63,10 +70,11 @@ const cylinderSmall = new THREE.Mesh( smallCylinder, material );
 
 const subRes = CSG.subtract(cylinderBig, cylinderSmall);
 subRes.rotation.set(Math.PI / 2,0,0);
-subRes.position.set(0,0,268.9+(32.105*0.5));
-//var hollowCylinder = subRes.toMesh( material );
-
+subRes.position.set(0,0,conePos);
 scene.add( subRes );
+
+ ///////////////////////////////////////////////////////////////
+//                  Particle                                 //
 
 const geometry = new THREE.SphereGeometry( 1, 32, 16 );
 const materialparticle = new THREE.MeshBasicMaterial( { color: '#EE4B2B' } );
