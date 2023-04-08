@@ -1,9 +1,9 @@
 import numpy as np
 
-m = 1
-cm = 1e-2
-mm = 1e-3
-um = 1e-6
+m = 1e2
+cm = 1
+mm = 1e-1
+um = 1e-4
 deg = 1
 
 fLGType = 48
@@ -335,7 +335,4 @@ rIn[5] = rIn[4]
 rIn[6] = fExitPipeInnerRadius
 
 
-
-print(z)
-print(rOut)
-print(rIn)
+print(fManginMirrorPosition)
