@@ -103,23 +103,26 @@ var extrudeSettings1 = {
 }
 var material1 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
 
+var materialT = new THREE.MeshBasicMaterial( { color: 0x90F615 } );
 var cylinder1 = new THREE.ExtrudeGeometry(shape, extrudeSettings1 );
-var meshCyl = new THREE.Mesh( cylinder1, material1 );
+var meshCyl = new THREE.Mesh( cylinder1, materialT );
 
-var largeSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorReflectingSurfaceRadius,32,16)
+scene.add(meshCyl);
+
+var largeSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorReflectingSurfaceRadius,64,16)
 var meshLSp = new THREE.Mesh( largeSphere, material1 );
 
 var smallSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorRefractingSurfaceRadius,32,16)
 var meshSSp = new THREE.Mesh( smallSphere, material1 );
 
-meshLSp.position.set(0,0,-CedarGeoPars.fManginMirrorReflectingSurfaceRadius 
-    + 0.5*CedarGeoPars.fManginMirrorZLength);
+meshLSp.position.set(0,0,CedarGeoPars.fManginMirrorReflectingSurfaceRadius 
+    - 0.5*CedarGeoPars.fManginMirrorZLength);
 meshLSp.updateMatrix();
 meshCyl.updateMatrix();
 const intRes = CSG.intersect(meshCyl, meshLSp);
 
-intRes.position.set(0,0,-CedarGeoPars.fManginMirrorRefractingSurfaceRadius 
-    - 0.5*CedarGeoPars.fManginMirrorZLength);
+intRes.position.set(0,0,CedarGeoPars.fManginMirrorRefractingSurfaceRadius 
+    + 0.5*CedarGeoPars.fManginMirrorZLength);
 intRes.updateMatrix();
 const LenseMesh = CSG.subtract(intRes,meshSSp)
 
