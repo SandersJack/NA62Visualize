@@ -107,8 +107,6 @@ var materialT = new THREE.MeshBasicMaterial( { color: 0x90F615 } );
 var cylinder1 = new THREE.ExtrudeGeometry(shape, extrudeSettings1 );
 var meshCyl = new THREE.Mesh( cylinder1, materialT );
 
-scene.add(meshCyl);
-
 var largeSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorReflectingSurfaceRadius,64,16)
 var meshLSp = new THREE.Mesh( largeSphere, material1 );
 
