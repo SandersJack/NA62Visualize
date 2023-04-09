@@ -98,7 +98,7 @@ shape.absarc(cx, cy, R, sAngle, eAngle);
 shape.absarc(cx, cy, r, eAngle, sAngle, true);
 
 var extrudeSettings1 = {
-    steps: 2,
+    steps: 3,
     depth: CedarGeoPars.fManginMirrorZLength
 }
 var material1 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
@@ -114,11 +114,14 @@ var meshSSp = new THREE.Mesh( smallSphere, material1 );
 
 meshLSp.position.set(0,0,-CedarGeoPars.fManginMirrorReflectingSurfaceRadius 
     + 0.5*CedarGeoPars.fManginMirrorZLength);
+meshLSp.updateMatrix();
+meshCyl.updateMatrix();
 const intRes = CSG.intersect(meshCyl, meshLSp);
 
 intRes.position.set(0,0,-CedarGeoPars.fManginMirrorRefractingSurfaceRadius 
     - 0.5*CedarGeoPars.fManginMirrorZLength);
-const LenseMesh = CSG.intersect(intRes,meshSSp)
+intRes.updateMatrix();
+const LenseMesh = CSG.subtract(intRes,meshSSp)
 
 const ManginPos = CedarGeoPars.fManginMirrorPosition
 LenseMesh.position.set(ManginPos[0],ManginPos[1],ManginPos[2]);
@@ -146,15 +149,18 @@ var extrudeSettings2 = {
 var material2 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
 
 var cylinder2 = new THREE.ExtrudeGeometry(shapeRing, extrudeSettings2 );
-var meshCyl2 = new THREE.Mesh( cylinder2, material2 );
+var meshCyl2 = new THREE.Mesh( cylinder2, material1 );
 
 var intSphere = new THREE.SphereGeometry(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,32,16);
 var meshintSph = new THREE.Mesh( intSphere, material2 );
 
 var dL = -CedarGeoPars.fChromaticCorrectorRearSurfaceRadius + 0.5*CedarGeoPars.fChromaticCorrectorZLength;
-dL -= CedarGeoPars.fChromaticCorrectorRearSurfaceRadius - Math.sqrt(Math.pow(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,2) - Math.pow(CedarGeoPars.fChromaticCorrectorInnerRadius,2));
+dL += CedarGeoPars.fChromaticCorrectorRearSurfaceRadius - Math.sqrt(Math.pow(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,2) - Math.pow(CedarGeoPars.fChromaticCorrectorInnerRadius,2));
+dL += 0.8; // This is for temp as it would not work with dL. Need to check against MC
+console.log(dL)
 meshintSph.position.set(0,0,dL);
-
+meshintSph.updateMatrix();
+meshCyl2.updateMatrix();
 const intSolid = CSG.intersect(meshCyl2,meshintSph);
 
 const ChromPos = CedarGeoPars.fChromaticCorrectorPosition;
@@ -211,12 +217,12 @@ for(let i=0; i<CedarGeoPars.fNSectors; i++){
 // Lights
 const lights = [];
 const lightValues = [
-    {colour: 0x14D14A, intensity: 8, dist: 120, x: 10, y: 0, z: 80},
-    {colour: 0xBE61CF, intensity: 6, dist: 120, x: -20, y: 1, z: -100},
-    {colour: 0x00FFFF, intensity: 3, dist: 100, x: 0, y: 100, z: 10},
-    {colour: 0x00FF00, intensity: 6, dist: 120, x: 0, y: -100, z: -10},
-    {colour: 0x16A7F5, intensity: 6, dist: 120, x: 100, y: 30, z: 0},
-    {colour: 0x90F615, intensity: 6, dist: 120, x: -100, y: -10, z: 0}
+    {colour: 0x14D14A, intensity: 8, dist: 120, x: 1, y: 0, z: 8},
+    {colour: 0xBE61CF, intensity: 6, dist: 120, x: -2, y: 1, z: -10},
+    {colour: 0x00FFFF, intensity: 3, dist: 100, x: 0, y: 10, z: 10},
+    {colour: 0x00FF00, intensity: 6, dist: 120, x: 0, y: -10, z: -10},
+    {colour: 0x16A7F5, intensity: 6, dist: 120, x: 10, y: 3, z: 0},
+    {colour: 0x90F615, intensity: 6, dist: 120, x: -10, y: -10, z: 0}
 ];
 for (let i=0; i<6; i++) {
     lights[i] = new THREE.PointLight(
