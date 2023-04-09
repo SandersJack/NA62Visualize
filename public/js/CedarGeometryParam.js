@@ -35,7 +35,7 @@ export var fChromaticCorrectorCoCYPosition = 0.0;
 export var fAlignmentMotorX = 0;
 export var fAlignmentMotorY = 0.0;
 
-const fNSectors = 8;
+export const fNSectors = 8;
 
 // Some radial offsets (used below)
 export var fQuartzWindowRadialOffset = 103.00 * mm;
