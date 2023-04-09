@@ -161,17 +161,55 @@ const ChromPos = CedarGeoPars.fChromaticCorrectorPosition;
 intSolid.position.set(ChromPos[0],ChromPos[1],ChromPos[2]);
 scene.add(intSolid);
 
+///////////////////////////////////////////////////////////////
+//                  Condenser Volumes                       //
+
+var angle = 180 / CedarGeoPars.fNSectors - 0.25*CedarGeoPars.fInterCondenserAngle;
+const Lxwedge = (CedarGeoPars.fCondenserRadialOffset - CedarGeoPars.fCondenserDistanceToCentre) * Math.tan(angle);
+const Dz = (CedarGeoPars.fCondenserRadialOffset-CedarGeoPars.fCondenserDistanceToCentre);
+
+let g = new THREE.BoxGeometry(Lxwedge, CedarGeoPars.fCondenserZLength, Dz);
+let pos = g.attributes.position;
+for(let i = 0; i < pos.count; i++){
+  if (pos.getZ(i) < 0) pos.setY(i, 0); // change Y-coord by condition
+}
+g.computeVertexNormals(); // don't forget to re-compute normals
+
+let m = new THREE.MeshLambertMaterial({color: 0x00FF00});
+let wedge = new THREE.Mesh(g, m);
+
+console.log(CedarGeoPars.fCondenserOuterRadius)
+var Tube = new THREE.CylinderGeometry(CedarGeoPars.fCondenserOuterRadius,CedarGeoPars.fCondenserOuterRadius,CedarGeoPars.fCondenserZLength,20,32, false, 0, Math.PI);
+var TubeMesh = new THREE.Mesh(Tube, m);
+wedge.position.set(0.5*CedarGeoPars.fCondenserRadialOffset + 0.5*CedarGeoPars.fCondenserDistanceToCentre,0,0);
+wedge.rotation.set(0,Math.PI/2,0)
+wedge.updateMatrix();
+TubeMesh.updateMatrix();
+
+const intCond = CSG.intersect(TubeMesh,wedge);
+intCond.position.set(50,0,0);
+
+var ConSphere = new THREE.SphereGeometry(CedarGeoPars.fCondenserFrontSurfaceRadius,32,16)
+var ConSphereMesh = new THREE.Mesh(ConSphere,m);
+ConSphereMesh.position.set(50,-(CedarGeoPars.fCondenserFrontSurfaceRadius-.5*CedarGeoPars.fCondenserZLength),0)
+ConSphereMesh.updateMatrix();
+intCond.updateMatrix();
+
+const intCond2 = CSG.intersect(intCond,ConSphereMesh);
+intCond2.position.set(50,20,0);
+intCond2.rotation.set(-Math.PI/2,-Math.PI/2,0);
+scene.add(intCond2)
 
 
 // Lights
 const lights = [];
 const lightValues = [
-    {colour: 0x14D14A, intensity: 8, dist: 12, x: 1, y: 0, z: 8},
-    {colour: 0xBE61CF, intensity: 6, dist: 12, x: -2, y: 1, z: -10},
-    {colour: 0x00FFFF, intensity: 3, dist: 10, x: 0, y: 10, z: 1},
-    {colour: 0x00FF00, intensity: 6, dist: 12, x: 0, y: -10, z: -1},
-    {colour: 0x16A7F5, intensity: 6, dist: 12, x: 10, y: 3, z: 0},
-    {colour: 0x90F615, intensity: 6, dist: 12, x: -10, y: -1, z: 0}
+    {colour: 0x14D14A, intensity: 8, dist: 120, x: 10, y: 0, z: 80},
+    {colour: 0xBE61CF, intensity: 6, dist: 120, x: -20, y: 1, z: -100},
+    {colour: 0x00FFFF, intensity: 3, dist: 100, x: 0, y: 100, z: 10},
+    {colour: 0x00FF00, intensity: 6, dist: 120, x: 0, y: -100, z: -10},
+    {colour: 0x16A7F5, intensity: 6, dist: 120, x: 100, y: 30, z: 0},
+    {colour: 0x90F615, intensity: 6, dist: 120, x: -100, y: -10, z: 0}
 ];
 for (let i=0; i<6; i++) {
     lights[i] = new THREE.PointLight(
