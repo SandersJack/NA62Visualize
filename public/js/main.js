@@ -103,23 +103,24 @@ var extrudeSettings1 = {
 }
 var material1 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
 
+var materialT = new THREE.MeshBasicMaterial( { color: 0x90F615 } );
 var cylinder1 = new THREE.ExtrudeGeometry(shape, extrudeSettings1 );
-var meshCyl = new THREE.Mesh( cylinder1, material1 );
+var meshCyl = new THREE.Mesh( cylinder1, materialT );
 
-var largeSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorReflectingSurfaceRadius,32,16)
+var largeSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorReflectingSurfaceRadius,64,16)
 var meshLSp = new THREE.Mesh( largeSphere, material1 );
 
 var smallSphere = new THREE.SphereGeometry(CedarGeoPars.fManginMirrorRefractingSurfaceRadius,32,16)
 var meshSSp = new THREE.Mesh( smallSphere, material1 );
 
-meshLSp.position.set(0,0,-CedarGeoPars.fManginMirrorReflectingSurfaceRadius 
-    + 0.5*CedarGeoPars.fManginMirrorZLength);
+meshLSp.position.set(0,0,CedarGeoPars.fManginMirrorReflectingSurfaceRadius 
+    - 0.5*CedarGeoPars.fManginMirrorZLength);
 meshLSp.updateMatrix();
 meshCyl.updateMatrix();
 const intRes = CSG.intersect(meshCyl, meshLSp);
 
-intRes.position.set(0,0,-CedarGeoPars.fManginMirrorRefractingSurfaceRadius 
-    - 0.5*CedarGeoPars.fManginMirrorZLength);
+intRes.position.set(0,0,CedarGeoPars.fManginMirrorRefractingSurfaceRadius 
+    + 0.5*CedarGeoPars.fManginMirrorZLength);
 intRes.updateMatrix();
 const LenseMesh = CSG.subtract(intRes,meshSSp)
 
@@ -149,16 +150,17 @@ var extrudeSettings2 = {
 var material2 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
 
 var cylinder2 = new THREE.ExtrudeGeometry(shapeRing, extrudeSettings2 );
-var meshCyl2 = new THREE.Mesh( cylinder2, material1 );
+var meshCyl2 = new THREE.Mesh( cylinder2, materialT );
 
-var intSphere = new THREE.SphereGeometry(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,32,16);
+var intSphere = new THREE.SphereGeometry(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,100,100);
 var meshintSph = new THREE.Mesh( intSphere, material2 );
 
-var dL = -CedarGeoPars.fChromaticCorrectorRearSurfaceRadius + 0.5*CedarGeoPars.fChromaticCorrectorZLength;
+var dL = -CedarGeoPars.fChromaticCorrectorRearSurfaceRadius + CedarGeoPars.fChromaticCorrectorZLength;
 dL += CedarGeoPars.fChromaticCorrectorRearSurfaceRadius - Math.sqrt(Math.pow(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,2) - Math.pow(CedarGeoPars.fChromaticCorrectorInnerRadius,2));
-dL += 0.8; // This is for temp as it would not work with dL. Need to check against MC
-console.log(dL)
+dL += 0.5*CedarGeoPars.fChromaticCorrectorZLength;; // This is for temp as it would not work with dL. Need to check against MC
+
 meshintSph.position.set(0,0,dL);
+
 meshintSph.updateMatrix();
 meshCyl2.updateMatrix();
 const intSolid = CSG.intersect(meshCyl2,meshintSph);
