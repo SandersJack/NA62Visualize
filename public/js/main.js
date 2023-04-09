@@ -182,23 +182,30 @@ console.log(CedarGeoPars.fCondenserOuterRadius)
 var Tube = new THREE.CylinderGeometry(CedarGeoPars.fCondenserOuterRadius,CedarGeoPars.fCondenserOuterRadius,CedarGeoPars.fCondenserZLength,20,32, false, 0, Math.PI);
 var TubeMesh = new THREE.Mesh(Tube, m);
 wedge.position.set(0.5*CedarGeoPars.fCondenserRadialOffset + 0.5*CedarGeoPars.fCondenserDistanceToCentre,0,0);
-wedge.rotation.set(0,Math.PI/2,0)
+wedge.rotation.set(0,Math.PI/2,0);
 wedge.updateMatrix();
 TubeMesh.updateMatrix();
 
 const intCond = CSG.intersect(TubeMesh,wedge);
-intCond.position.set(50,0,0);
 
 var ConSphere = new THREE.SphereGeometry(CedarGeoPars.fCondenserFrontSurfaceRadius,32,16)
 var ConSphereMesh = new THREE.Mesh(ConSphere,m);
-ConSphereMesh.position.set(50,-(CedarGeoPars.fCondenserFrontSurfaceRadius-.5*CedarGeoPars.fCondenserZLength),0)
+ConSphereMesh.position.set(0,-(CedarGeoPars.fCondenserFrontSurfaceRadius-.5*CedarGeoPars.fCondenserZLength),0);
 ConSphereMesh.updateMatrix();
 intCond.updateMatrix();
 
-const intCond2 = CSG.intersect(intCond,ConSphereMesh);
-intCond2.position.set(50,20,0);
-intCond2.rotation.set(-Math.PI/2,-Math.PI/2,0);
-scene.add(intCond2)
+for(let i=0; i<CedarGeoPars.fNSectors; i++){
+    var intCond2 = CSG.intersect(intCond,ConSphereMesh);
+    var tangle = ((i+2.5) * Math.PI*2)/CedarGeoPars.fNSectors;
+    intCond2.position.set(CedarGeoPars.fCondenserPosition[1],CedarGeoPars.fCondenserPosition[0],CedarGeoPars.fCondenserPosition[2]);
+    intCond2.rotation.set(-Math.PI/2,Math.PI,0);
+
+    intCond2.position.x += CedarGeoPars.fCondenserRadialOffset * Math.sin(tangle);
+    intCond2.position.y += CedarGeoPars.fCondenserRadialOffset * Math.cos(tangle);
+
+    intCond2.rotation.y -= (-tangle - Math.PI/2);
+    scene.add(intCond2)
+}
 
 
 // Lights
