@@ -152,16 +152,17 @@ var extrudeSettings2 = {
 var material2 = new THREE.MeshBasicMaterial( { color: 0x00FFFF } );
 
 var cylinder2 = new THREE.ExtrudeGeometry(shapeRing, extrudeSettings2 );
-var meshCyl2 = new THREE.Mesh( cylinder2, material1 );
+var meshCyl2 = new THREE.Mesh( cylinder2, materialT );
 
-var intSphere = new THREE.SphereGeometry(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,32,16);
+var intSphere = new THREE.SphereGeometry(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,100,100);
 var meshintSph = new THREE.Mesh( intSphere, material2 );
 
-var dL = -CedarGeoPars.fChromaticCorrectorRearSurfaceRadius + 0.5*CedarGeoPars.fChromaticCorrectorZLength;
+var dL = -CedarGeoPars.fChromaticCorrectorRearSurfaceRadius + CedarGeoPars.fChromaticCorrectorZLength;
 dL += CedarGeoPars.fChromaticCorrectorRearSurfaceRadius - Math.sqrt(Math.pow(CedarGeoPars.fChromaticCorrectorRearSurfaceRadius,2) - Math.pow(CedarGeoPars.fChromaticCorrectorInnerRadius,2));
-dL += 0.8; // This is for temp as it would not work with dL. Need to check against MC
-console.log(dL)
+dL += 0.5*CedarGeoPars.fChromaticCorrectorZLength;; // This is for temp as it would not work with dL. Need to check against MC
+
 meshintSph.position.set(0,0,dL);
+
 meshintSph.updateMatrix();
 meshCyl2.updateMatrix();
 const intSolid = CSG.intersect(meshCyl2,meshintSph);
