@@ -23,8 +23,8 @@ window.addEventListener('resize', () => {
 
 
 const volumes = [
-    {rout : CedarGeoPars.fFrontVesselOuterRadius, rin: CedarGeoPars.fFrontVesselInnerRadius, length: CedarGeoPars.fFrontVesselZLength, z: CedarGeoPars.fFrontVesselPosition[2] - 0.5 * CedarGeoPars.fFrontVesselZLength, colour: "#CFD4D9"},
-    {rout : CedarGeoPars.fMainVesselOuterRadius, rin: CedarGeoPars.fFrontPipeInnerRadius, length: 1 , z: CedarGeoPars.fFrontVesselPosition[2] + 0.5 * CedarGeoPars.fFrontVesselZLength,colour: "#CFD4D9"},
+    {rout : CedarGeoPars.fFrontVesselOuterRadius, rin: CedarGeoPars.fFrontVesselInnerRadius, length: CedarGeoPars.fFrontVesselZLength, z: CedarGeoPars.fFrontVesselPosition[2] - 0.5 * CedarGeoPars.fFrontVesselZLength, colour: 0x14D14A},
+    {rout : CedarGeoPars.fMainVesselOuterRadius, rin: CedarGeoPars.fFrontVesselInnerRadius, length: 1 , z: CedarGeoPars.fFrontVesselPosition[2] + 0.5 * CedarGeoPars.fFrontVesselZLength,colour: "#CFD4D9"},
     {rout : CedarGeoPars.fMainVesselOuterRadius, rin: CedarGeoPars.fMainVesselInnerRadius, length: CedarGeoPars.fMainVesselCylinderZLength ,z: CedarGeoPars.fFrontVesselPosition[2] + 0.5 * CedarGeoPars.fFrontVesselZLength + 1,colour: "#CFD4D9"},
 ];
 
@@ -175,6 +175,8 @@ scene.add(intSolid);
 var angle = 180 / CedarGeoPars.fNSectors - 0.25*CedarGeoPars.fInterCondenserAngle;
 const Lxwedge = (CedarGeoPars.fCondenserRadialOffset - CedarGeoPars.fCondenserDistanceToCentre) * Math.tan(angle);
 const Dz = (CedarGeoPars.fCondenserRadialOffset-CedarGeoPars.fCondenserDistanceToCentre);
+console.log(CedarGeoPars.fCondenserRadialOffset);
+console.log(CedarGeoPars.fCondenserDistanceToCentre);
 
 let g = new THREE.BoxGeometry(Lxwedge, CedarGeoPars.fCondenserZLength, Dz);
 let pos = g.attributes.position;
@@ -208,8 +210,8 @@ for(let i=0; i<CedarGeoPars.fNSectors; i++){
     intCond2.position.set(CedarGeoPars.fCondenserPosition[1],CedarGeoPars.fCondenserPosition[0],CedarGeoPars.fCondenserPosition[2]);
     intCond2.rotation.set(-Math.PI/2,Math.PI,0);
     
-    intCond2.position.x += CedarGeoPars.fCondenserRadialOffset * Math.sin(tangle);
-    intCond2.position.y += CedarGeoPars.fCondenserRadialOffset * Math.cos(tangle);
+    intCond2.position.x += 0.5*CedarGeoPars.fCondenserRadialOffset * Math.sin(tangle);
+    intCond2.position.y += 0.5*CedarGeoPars.fCondenserRadialOffset * Math.cos(tangle);
 
     intCond2.rotation.y -= (-tangle - Math.PI/2);
     scene.add(intCond2)
