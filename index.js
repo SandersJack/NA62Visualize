@@ -14,4 +14,17 @@ app.get('/', function(req,res) {
     res.sendFile('index.html')
 });
 
+app.get('/public/js/json/ChromaticCorrector.json', (req, res) => {
+    console.log(res)
+  
+    /* Insted of doing all this */
+    // res.writeHead(200, {
+    //    'Content-type': 'application/json'
+    // });
+    // res.end(JSON.stringify(data));
+  
+    /* Just send the file */
+    res.sendFile(path.join(__dirname, '/public/js/json/', 'ChromaticCorrector.json'));
+  });
+
 app.listen(4455);
