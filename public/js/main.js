@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { TrackballControls } from 'three/examples/jsm/controls/TrackballControls';
 import { CSG } from 'three-csg-ts';
 import * as CedarGeoPars from './CedarGeometryParam.js'
+import * as dat from 'dat.gui'
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.6, 1200);
@@ -18,6 +19,8 @@ window.addEventListener('resize', () => {
     camera.updateProjectionMatrix();
 })
 
+var gui = new dat.GUI();
+
  ///////////////////////////////////////////////////////////////
 //                  Vessel Volumes                          //
 
@@ -28,6 +31,7 @@ const volumes = [
     {rout : CedarGeoPars.fMainVesselOuterRadius, rin: CedarGeoPars.fMainVesselInnerRadius, length: CedarGeoPars.fMainVesselCylinderZLength ,z: CedarGeoPars.fFrontVesselPosition[2] + 0.5 * CedarGeoPars.fFrontVesselZLength + 1,colour: "#CFD4D9"},
 ];
 
+var VesselMeshes = []
 
 for(let i=0; i<3; i++){
     var R =  volumes[i]['rout'];
@@ -53,6 +57,9 @@ for(let i=0; i<3; i++){
     mesh.position.set(0,0,volumes[i]['z']);
     scene.add(mesh)
 
+    VesselMeshes.push(mesh);
+    gui.add(mesh, 'visible').name("Vessel");
+
 }
 
 const coneL = (CedarGeoPars.fExitWindowPosition[2] - 0.5*CedarGeoPars.fExitWindowZLength) - (CedarGeoPars.fMainVesselCylinderPosition[2]
@@ -72,6 +79,7 @@ const subRes = CSG.subtract(cylinderBig, cylinderSmall);
 subRes.rotation.set(Math.PI / 2,0,0);
 subRes.position.set(0,0,conePos);
 scene.add( subRes );
+gui.add(subRes, 'visible').name("Vessel");
 
  ///////////////////////////////////////////////////////////////
 //                  Particle                                 //
