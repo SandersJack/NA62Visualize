@@ -26,7 +26,7 @@ var gui = new dat.GUI();
 
 
 const volumes = [
-    {rout : CedarGeoPars.fFrontVesselOuterRadius, rin: CedarGeoPars.fFrontVesselInnerRadius, length: CedarGeoPars.fFrontVesselZLength, z: CedarGeoPars.fFrontVesselPosition[2] - 0.5 * CedarGeoPars.fFrontVesselZLength, colour: 0x14D14A},
+    {rout : CedarGeoPars.fFrontVesselOuterRadius, rin: CedarGeoPars.fFrontVesselInnerRadius, length: CedarGeoPars.fFrontVesselZLength, z: CedarGeoPars.fFrontVesselPosition[2] - 0.5 * CedarGeoPars.fFrontVesselZLength, colour: "#CFD4D9"},
     {rout : CedarGeoPars.fMainVesselOuterRadius, rin: CedarGeoPars.fFrontVesselInnerRadius, length: 1 , z: CedarGeoPars.fFrontVesselPosition[2] + 0.5 * CedarGeoPars.fFrontVesselZLength,colour: "#CFD4D9"},
     {rout : CedarGeoPars.fMainVesselOuterRadius, rin: CedarGeoPars.fMainVesselInnerRadius, length: CedarGeoPars.fMainVesselCylinderZLength ,z: CedarGeoPars.fFrontVesselPosition[2] + 0.5 * CedarGeoPars.fFrontVesselZLength + 1,colour: "#CFD4D9"},
 ];
